@@ -1,36 +1,65 @@
 # Multimodal Code Debug
 
-> A lightweight multimodal debugging assistant that analyzes screenshots and source code to identify errors, explain root causes, and suggest fixes.
+![Python](https://img.shields.io/badge/Python-3.10+-blue) ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green) ![React](https://img.shields.io/badge/React-Frontend-blue)
+
+> A focused demo and reference architecture for multimodal AI-powered debugging.
 
 ## Overview
 
-This project provides a simple full-stack demo for a multimodal debugging assistant:
+This project demonstrates a practical multimodal debugging pipeline that analyzes screenshots and source code to identify errors, explain root causes, and suggest fixes.
 
-- Frontend: React + Vite UI for uploading screenshots and source code, displaying AI analysis.
-- Backend: FastAPI server that accepts file uploads, runs OCR on screenshots, builds a debugging prompt, and forwards the prompt to a local LLM (via Ollama).
-- Model integration: `models/llava_engine.py` invokes Ollama CLI to run a multimodal LLaVA model (configured to run locally).
+This project is intended as:
+- A learning-focused demo of multimodal AI pipelines
+- A reference architecture for AI-powered debugging tools
+- A base for extending into full image-aware LLM debugging
 
-Important note: the current pipeline sends OCR-extracted text to the LLM. The image pixels are saved and available, but the model call currently passes only the text prompt (not the binary image). See `backend/models/llava_engine.py` and `backend/app.py`.
+## Key Capabilities
 
-## Repository Structure
+- Upload error screenshots and source code
+- OCR-based error text extraction
+- LLM-powered root cause analysis and suggested fixes
+- Optional persistence using MongoDB
 
-- `backend/` — FastAPI backend
-  - `app.py` — API endpoints (POST `/analyze`)
-  - `services/ocr_service.py` — OCR extraction using Tesseract
-  - `services/prompt_builder.py` — Builds the debugging prompt sent to the LLM
-  - `models/llava_engine.py` — Runs Ollama CLI to call the model
-  - `utils/` — helpers such as `memory_guard.py`
-- `frontend/` — React + Vite frontend
-  - `src/services/api.ts` — client API helper to send multipart/form-data
-  - `src/components/ResultPanel.tsx` — displays backend analysis results
-  - `src/App.tsx` — main UI (upload, code editor, About modal, footer)
+## Architecture Overview
+
+Frontend (React)
+  ↓ multipart/form-data
+FastAPI Backend
+  ↓
+OCR (Tesseract)
+  ↓
+Prompt Builder
+  ↓
+LLM (Ollama / LLaVA)
+  ↓
+Analysis JSON → UI
+
+## Tech Stack
+
+**Frontend**
+- React
+- Vite
+- TypeScript
+
+**Backend**
+- FastAPI
+- Python
+- Uvicorn
+
+**AI / ML**
+- OCR: Tesseract
+- LLM: LLaVA via Ollama
+- Prompt engineering
+
+**Storage (Optional)**
+- MongoDB
 
 ## Prerequisites
 
 - Python 3.10+ (dev used Python 3.13 on Windows)
 - Node.js 16+ and npm
 - Tesseract OCR installed and available on PATH (or configure `pytesseract.pytesseract.tesseract_cmd`)
-- Ollama installed locally and configured with the `llava:7b` model if you want local multimodal inference (or change `models/llava_engine.py` to call another API).
+- Ollama installed locally and configured with the `llava:7b` model if you want local multimodal inference (or change `backend/models/llava_engine.py` to call another API).
 
 ## Backend Setup
 
@@ -105,26 +134,33 @@ npm run dev
 
 2. Open the UI at the URL printed by Vite (usually `http://localhost:5173`). The UI provides an upload zone and a code editor.
 
+## Screenshots & Demo
+
+Add visual examples and a short demo GIF to help reviewers understand the UI and results quickly. Place images in `docs/screenshots/` and reference them from the README or a `docs/` page.
+
+Example embed markdown:
+
+```markdown
+![Upload example](docs/screenshots/upload-example.png)
+![Analysis result](docs/screenshots/analysis-result.png)
+```
+
+If you add a `demo.gif` I can embed it here and resize it for an optimal README display.
+
 ## How It Works (Request Flow)
 
 1. The frontend sends a multipart/form-data POST request to `http://127.0.0.1:8000/analyze` with a `file` (image) and optional `code`/`language` form fields. See `src/services/api.ts`.
 2. The backend `app.py` saves the uploaded file to `uploads/`.
 3. OCR is run with `pytesseract` (`services/ocr_service.py`) to extract text from the image.
-4. `services/prompt_builder.py` constructs a debugging prompt (now instructing the model to check for type coercion and mixed-type errors).
-5. `models/llava_engine.py` currently calls the Ollama CLI with the prompt (text). The model output is returned as raw text in JSON `{ "analysis": "..." }`.
+4. `services/prompt_builder.py` constructs a debugging prompt.
+5. `backend/models/llava_engine.py` calls the Ollama CLI with the prompt (text). The model output is returned as raw text in JSON `{ "analysis": "..." }`.
 
-## Common Issues & Troubleshooting
+## Roadmap / Future Enhancements
 
-- 422 Unprocessable Content: If the backend returns 422 on upload, the cause is usually a form mismatch. Ensure `file` is sent as multipart/form-data and the backend expects `file: UploadFile = File(...)`. This project already fixes that in `backend/app.py`.
-- Uvicorn reload traces: When editing backend files with `--reload`, seeing a `KeyboardInterrupt` stack from the child process is normal — the reloader kills and restarts the worker.
-- Ollama / Model errors: If the model process fails, `models/llava_engine.py` returns the `stderr` text. Check `OLLAMA_PATH` and that the `llava:7b` model (or your chosen model) is available to Ollama.
-- OCR failures: Ensure Tesseract is installed; if OCR returns poor text, consider improving image preprocessing (cropping, contrast) or using a different OCR engine.
-
-## Recommended Improvements
-
-- Multimodal input: pass the image directly to a model that supports images (update `run_llava` to send image bytes or use an API that accepts images) — currently only OCR text is sent.
-- Heuristics: add deterministic heuristics to detect common logical errors (e.g., JavaScript string+number concatenation) and surface them before/alongside model output.
-- Structured responses: parse the model output into JSON (root cause, suggestion, confidence) to render richer UI cards.
+- Multimodal input: pass the image directly to a model that supports images (update `run_llava` to send image bytes or use an API that accepts images)
+- Heuristics: add deterministic rules to detect common logical errors
+- Structured responses: parse model output into JSON (root cause, suggestion, confidence)
+- Persistence: GridFS for binary storage (optional)
 
 ## Contributing
 
@@ -135,8 +171,10 @@ Contributions welcome. Suggested workflow:
 
 ## Author
 
-Author: karthik
+Karthik J  
+B.Tech Student | AI • Full-Stack • GenAI
 
 ## License
 
-This repository does not include a license file. Add one if you plan to open-source it.
+This project is provided for educational and portfolio purposes. Add an open-source license (e.g., MIT) if you plan to publish the repository publicly.
+
