@@ -51,7 +51,7 @@ Analysis JSON → UI
 - LLM: LLaVA via Ollama
 - Prompt engineering
 
-**Storage (Optional)**
+**Storage**
 - MongoDB
 
 ## Prerequisites
@@ -141,11 +141,10 @@ Add visual examples and a short demo GIF to help reviewers understand the UI and
 Example embed markdown:
 
 ```markdown
-![Upload example](docs/screenshots/upload-example.png)
-![Analysis result](docs/screenshots/analysis-result.png)
+![Upload example](docs/screenshots/Screenshot 2025-12-28 102705.png)
+![Analysis result](docs/screenshots/Screenshot 2025-12-28 102716.png)
 ```
 
-If you add a `demo.gif` I can embed it here and resize it for an optimal README display.
 
 ## How It Works (Request Flow)
 
@@ -171,7 +170,7 @@ Contributions welcome. Suggested workflow:
 
 ## Author
 
-Karthik J  
+Karthik Jonnalagadda
 B.Tech Student | AI • Full-Stack • GenAI
 
 ## License
