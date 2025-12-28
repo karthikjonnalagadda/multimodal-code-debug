@@ -136,14 +136,12 @@ npm run dev
 
 ## Screenshots & Demo
 
-Add visual examples and a short demo GIF to help reviewers understand the UI and results quickly. Place images in `docs/screenshots/` and reference them from the README or a `docs/` page.
+### Upload Example
+![Upload example](docs/screenshots/Screenshot-2025-12-28-102705.png)
 
-Example embed markdown:
+### Analysis Result
+![Analysis result](docs/screenshots/Screenshot-2025-12-28-102716.png)
 
-```markdown
-![Upload example](docs/screenshots/Screenshot 2025-12-28 102705.png)
-![Analysis result](docs/screenshots/Screenshot 2025-12-28 102716.png)
-```
 
 
 ## How It Works (Request Flow)
