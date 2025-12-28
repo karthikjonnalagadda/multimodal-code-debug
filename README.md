@@ -88,7 +88,7 @@ uvicorn app:app --reload
 
 Notes: the `--reload` option will show a transient KeyboardInterrupt stack when files change as the reloader restarts the worker — this is expected.
 
-## MongoDB (optional)
+## MongoDB
 
 The backend can save upload metadata (filename, path, OCR text, analysis, timestamp) to a MongoDB database. The project defaults to `mongodb://localhost:27017/` and database name `debugai`.
 
